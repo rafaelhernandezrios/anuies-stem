@@ -10,7 +10,11 @@ const Esquema = z.object({
   password: z.string().min(1, "Escribe tu contraseña."),
 });
 
-export type EstadoLogin = { error?: string; campo?: "email" | "password" };
+export type EstadoLogin = {
+  error?: string;
+  campo?: "email" | "password";
+  sinVerificar?: boolean;
+};
 
 export async function iniciarSesion(
   _previo: EstadoLogin,
@@ -37,6 +41,7 @@ export async function iniciarSesion(
       error:
         "Tu correo aún no está verificado. Revisa tu bandeja o pide un enlace nuevo.",
       campo: "email",
+      sinVerificar: true,
     };
   }
 

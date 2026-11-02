@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { Aviso, Boton, Campo, Entrada } from "@/components/ui";
+import { Aviso, Boton, BotonEnlace, Campo, Entrada } from "@/components/ui";
 import { iniciarSesion, type EstadoLogin } from "./acciones";
 
 const INICIAL: EstadoLogin = {};
@@ -14,7 +14,15 @@ export function FormularioLogin() {
     <form action={accion} noValidate>
       {estado.error && (
         <div className="mb-5">
-          <Aviso>{estado.error}</Aviso>
+          <Aviso>
+            {estado.error}
+            {estado.sinVerificar && (
+              <>
+                {" "}
+                ¿No te llega? <Link href="/ayuda">Pide ayuda</Link>.
+              </>
+            )}
+          </Aviso>
         </div>
       )}
 
@@ -67,6 +75,12 @@ export function FormularioLogin() {
 
       <div className="mt-6 border-t border-linea pt-6 text-[13px] text-gris">
         ¿Aún no tienes cuenta? <Link href="/registro">Crea tu registro</Link>
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-3 text-[12.5px] text-gris">
+        <span>¿No te llegó el correo de confirmación?</span>
+        <BotonEnlace href="/ayuda" variante="secundario" className="flex-none px-4 py-2">
+          Ayuda
+        </BotonEnlace>
       </div>
       <p className="mt-3.5 font-mono text-[10.5px] leading-relaxed text-gris">
         Acceso de comité y ANUIES con las mismas credenciales;

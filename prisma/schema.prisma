@@ -88,6 +88,11 @@ enum EstadoIA {
   error
 }
 
+enum EstadoSolicitud {
+  pendiente
+  atendida
+}
+
 enum TipoToken {
   verificacion_correo
   recuperacion_password
@@ -367,6 +372,24 @@ model AuditLog {
 
   @@index([entidad, entidadId])
   @@index([creadoEn])
+}
+
+// Pedidos de ayuda que llegan desde el login, sobre todo de quien no recibe el
+// correo de confirmación. Se guarda el correo tal cual lo escribió la persona,
+// sin ligarlo a una cuenta: puede que no exista o que esté mal escrito, y eso
+// es justo lo que la administración tiene que ver.
+model SolicitudAyuda {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  nombre        String
+  email         String
+  mensaje       String?
+  estado        EstadoSolicitud @default(pendiente)
+  creadaEn      DateTime        @default(now())
+  atendidaEn    DateTime?
+  atendidaPorId String?         @db.ObjectId
+
+  @@index([estado, creadaEn])
+  @@index([email])
 }
 
 // Contador para los folios. Existe para poder usar findAndModify con $inc y

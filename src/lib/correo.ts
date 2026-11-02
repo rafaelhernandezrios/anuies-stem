@@ -243,3 +243,27 @@ export function correoRecordatorioCierre(
   const { asunto, html } = recordatorioCierre(opts);
   return enviar(para, asunto, html);
 }
+
+/** Aviso a la administración de que alguien pidió ayuda desde el login. Todo
+ *  lo que viene del formulario es texto de un desconocido: se escapa. */
+export function correoSolicitudAyuda(
+  para: string,
+  s: { nombre: string; email: string; mensaje: string | null; cuenta: string },
+) {
+  const mensaje = s.mensaje
+    ? `<p style="margin-bottom:6px"><strong>Mensaje:</strong></p>
+       <p style="background:#FBF5F8;border-left:3px solid #D6336C;padding:10px 14px;margin:0 0 16px;white-space:pre-wrap">${escapar(s.mensaje)}</p>`
+    : "";
+  return enviar(
+    para,
+    `Solicitud de ayuda · ${s.email}`,
+    plantilla(
+      "Alguien pidió ayuda",
+      `<p>Llegó una solicitud de ayuda desde la pantalla de inicio de sesión.</p>
+       <p><strong>Nombre:</strong> ${escapar(s.nombre)}<br><strong>Correo:</strong> ${escapar(s.email)}<br><strong>Cuenta:</strong> ${escapar(s.cuenta)}</p>
+       ${mensaje}
+       <p>Desde el panel puedes reenviar el enlace de confirmación o activar la cuenta a mano.</p>`,
+      { texto: "Ver solicitudes", url: `${BASE}/admin/ayuda` },
+    ),
+  );
+}
